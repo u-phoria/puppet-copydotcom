@@ -1,0 +1,52 @@
+#!/bin/sh
+# CopyConsole (Copy cloud storage by Barracuda) service
+
+USER=<%=@uid%>
+DAEMON="<%=@install_dir%>/copy/<%=@target_arch%>/CopyConsole"
+DAEMON_ARGS="-daemon"
+ 
+start() {
+   echo "Starting CopyConsole..."
+       if [ -x $DAEMON ]; then
+           start-stop-daemon -b -o -c $USER -S -u $USER -x $DAEMON -- $DAEMON_ARGS
+       fi
+}
+ 
+stop() {
+   echo "Stopping CopyConsole..."
+       if [ -x $DAEMON ]; then
+           start-stop-daemon -o -c $USER -K -u $USER -x $DAEMON
+       fi
+}
+ 
+status() {
+       dbpid=`pgrep -u $USER CopyConsole`
+       if [ -z $dbpid ] ; then
+           echo "CopyConsole for USER $USER: not running."
+       else
+           echo "CopyConsole for USER $USER: running (pid $dbpid)"
+       fi
+}
+ 
+case "$1" in
+ 
+   start)
+       start
+       ;;
+   stop)
+       stop
+       ;;
+   restart|reload|force-reload)
+       stop
+       start
+       ;;
+   status)
+       status
+       ;;
+   *)
+       echo "Usage: /etc/init.d/copyconsole {start|stop|reload|force-reload|restart|status}"
+       exit 1
+ 
+esac
+ 
+exit 0
