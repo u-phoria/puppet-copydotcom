@@ -28,7 +28,7 @@ class copydotcom (
 	exec { 'install-copydotcom':
 		command => "tar -C ${install_dir} -zxvf /tmp/${installer}",
 		unless => "test -d ${install_dir}/copy",
-		require => Exec['download-client'],
+		subscribe => Exec['download-client'],
 	}
 
 	file { "${install_dir}/copy":
