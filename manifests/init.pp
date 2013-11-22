@@ -3,6 +3,7 @@ class copydotcom (
 	$gid = undef,
 	$username = undef,
 	$password = undef,
+	$copy_dir = '/root/copy',
 	$installer = 'Copy.tgz',
 	$download_url = 'https://copy.com/install/linux/Copy.tgz',
 	$install_dir = '/opt') {
@@ -40,7 +41,7 @@ class copydotcom (
 	}
 	
 	exec { 'copydotcom-login':
-    command => "echo | ${install_dir}/copy/$target_arch/CopyConsole -u='$username' -p='$password'",
+    command => "echo | ${install_dir}/copy/$target_arch/CopyConsole -u='$username' -r='$copy_dir' -p='$password'",
     require => File['change-tarball-owner'],
     subscribe => Exec['install-copydotcom'],
   }
