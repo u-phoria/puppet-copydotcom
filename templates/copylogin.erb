@@ -9,4 +9,4 @@ SLEEP_SECS=6
 $DAEMON -u=$USERNAME -r=$COPY_DIR -p=$PASSWORD &
 PID=$!
 sleep $SLEEP_SECS
-kill -INT $PID
+kill $PID
