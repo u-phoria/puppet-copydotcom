@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DAEMON="<%=@install_dir%>/copy/<%=@target_arch%>/CopyConsole"
+COPY_DIR="<%=@copy_dir%>"
+USERNAME="<%=@username%>"
+PASSWORD="<%=@password%>"
+SLEEP_SECS=6
+
+$DAEMON -u=$USERNAME -r=$COPY_DIR -p=$PASSWORD &
+PID=$!
+sleep $SLEEP_SECS
+kill -INT $PID

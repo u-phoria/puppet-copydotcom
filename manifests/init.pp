@@ -40,14 +40,23 @@ class copydotcom (
 		recurse => true,
 	}
 	
-	exec { 'copydotcom-login':
-    command => "echo | ${install_dir}/copy/$target_arch/CopyConsole -u='$username' -r='$copy_dir' -p='$password'",
-    require => File['change-tarball-owner'],
+	file { "${install_dir}/copy/copylogin":
+    require=> File['change-tarball-owner'],
+    content=> template('copydotcom/copylogin.erb'),
+    owner  => root,
+    group  => root,
+    mode   => 755,
+  }
+  
+	exec { 'copylogin':
+    command => "${install_dir}/copy/copylogin",
+    require => File["$install_dir/copy/copylogin"],
     subscribe => Exec['install-copydotcom'],
   }
 
 	file { '/etc/init.d/copyconsole':
 		require=> File['change-tarball-owner'],
+		subscribe=> Exec['copylogin'],
 		content=> template('copydotcom/copyconsole.erb'),
 		owner  => root,
 		group  => root,
@@ -57,6 +66,6 @@ class copydotcom (
 	service { 'copyconsole':
     enable => true,
     ensure => running,
-    subscribe => Exec['copydotcom-login'],
+    subscribe => File['/etc/init.d/copyconsole'],
   }
 }
